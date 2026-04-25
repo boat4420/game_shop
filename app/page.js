@@ -125,7 +125,7 @@ export default function ShopPage() {
       <section className="relative">
         <div className="flex items-center justify-between mb-12 px-4">
           <h2 className="text-3xl font-black tracking-tighter uppercase italic">
-            Featured <span className="text-rose-500 text-shadow-glow">Titles</span>
+            Select <span className="text-rose-500 text-shadow-glow">Game</span>
           </h2>
           <div className="flex items-center gap-4">
             {user ? (

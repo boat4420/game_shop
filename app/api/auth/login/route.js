@@ -21,7 +21,14 @@ export async function POST(request) {
     const session = await encrypt({ id: user.id, username: user.username, role: user.role, expires });
 
     // Save session in cookie
-    (await cookies()).set('session', session, { expires, httpOnly: true });
+    const cookieStore = await cookies();
+    cookieStore.set('session', session, { 
+      expires, 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/' 
+    });
 
     return NextResponse.json({ 
       user: { id: user.id, username: user.username, role: user.role } 
