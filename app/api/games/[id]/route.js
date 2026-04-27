@@ -1,6 +1,12 @@
+// ==========================================
+// GAME BY ID API ROUTE (จัดการเกมรายบุคคล)
+// ==========================================
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+// ------------------------------------------
+// [PUT] อัปเดตข้อมูลเกมตาม ID
+// ------------------------------------------
 export async function PUT(request, { params }) {
   try {
     const { id } = await params;
@@ -15,6 +21,9 @@ export async function PUT(request, { params }) {
   }
 }
 
+// ------------------------------------------
+// [DELETE] ลบข้อมูลเกมตาม ID
+// ------------------------------------------
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
