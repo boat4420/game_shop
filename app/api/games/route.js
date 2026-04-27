@@ -1,6 +1,12 @@
+// ==========================================
+// GAMES API ROUTE
+// ==========================================
 import pool from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+// ------------------------------------------
+// [GET] ดึงข้อมูลเกมทั้งหมดจากฐานข้อมูล
+// ------------------------------------------
 export async function GET() {
   try {
     const [rows] = await pool.query('SELECT * FROM games ORDER BY created_at DESC');
@@ -10,6 +16,9 @@ export async function GET() {
   }
 }
 
+// ------------------------------------------
+// [POST] เพิ่มข้อมูลเกมใหม่ลงในฐานข้อมูล
+// ------------------------------------------
 export async function POST(request) {
   try {
     const { name, price, original_price, category, image_url, is_new } = await request.json();

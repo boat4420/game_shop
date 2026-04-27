@@ -1,4 +1,7 @@
 'use client';
+// ==========================================
+// REGISTER PAGE
+// ==========================================
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -7,6 +10,9 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  // ------------------------------------------
+  // REGISTRATION HANDLER (ฟังก์ชันส่งข้อมูลสมัครสมาชิก)
+  // ------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -27,6 +33,9 @@ export default function RegisterPage() {
     }
   };
 
+  // ------------------------------------------
+  // RENDER REGISTER FORM (การแสดงผลฟอร์มสมัครสมาชิก)
+  // ------------------------------------------
   return (
     <main className="min-h-screen bg-[#1A1D24] flex items-center justify-center p-6">
       <div className="bg-[#23272F] p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-800">

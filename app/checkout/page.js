@@ -1,9 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+// ==========================================
+// CHECKOUT & PAYMENT PAGE
+// ==========================================
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
+  // ------------------------------------------
+  // STATE MANAGEMENT (การจัดการสถานะ)
+  // ------------------------------------------
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
@@ -12,29 +18,48 @@ export default function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
 
+  // ------------------------------------------
+  // AUTH & DATA FETCHING (เช็คสิทธิ์และดึงข้อมูล)
+  // ------------------------------------------
+  const fetchUser = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.user) {
+        setUser(data.user);
+      } else {
+        // ถ้าไม่ได้ Login ให้เด้งไปหน้า Login พร้อมส่ง parameter เพื่อกลับมาหน้าเดิม
+        router.push('/login?redirect=/checkout');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      router.push('/login?redirect=/checkout');
+    }
+  }, [router]);
+
+  // ------------------------------------------
+  // INITIALIZATION (ดึงข้อมูลตะกร้าและผู้ใช้)
+  // ------------------------------------------
   useEffect(() => {
     const savedCart = localStorage.getItem('game_cart');
     if (savedCart) {
-      setCart(JSON.parse(savedCart));
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (e) {
+        console.error('Failed to parse cart:', e);
+        router.push('/');
+      }
     } else {
       router.push('/');
     }
     fetchUser();
-  }, [router]);
-
-  const fetchUser = async () => {
-    const res = await fetch('/api/auth/me');
-    const data = await res.json();
-    if (data.user) {
-      setUser(data.user);
-    } else {
-      // If not logged in, redirect to login first or handle as guest
-      router.push('/login?redirect=/checkout');
-    }
-  };
+  }, [router, fetchUser]);
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
+  // ------------------------------------------
+  // CHECKOUT HANDLER (ฟังก์ชันส่งคำสั่งซื้อ)
+  // ------------------------------------------
   const handleCheckout = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -54,7 +79,7 @@ export default function CheckoutPage() {
       if (res.ok) {
         setOrderId(data.orderId);
         setIsSuccess(true);
-        localStorage.removeItem('game_cart'); // Clear cart
+        localStorage.removeItem('game_cart'); // ล้างตะกร้าเมื่อสั่งซื้อสำเร็จ
       } else {
         alert(data.error || 'Checkout failed');
       }
@@ -65,6 +90,9 @@ export default function CheckoutPage() {
     }
   };
 
+  // ------------------------------------------
+  // RENDER UI (การแสดงผลหน้าชำระเงิน)
+  // ------------------------------------------
   if (cart.length === 0 && !isSuccess) {
     return <div className="min-h-screen bg-[#1A1D24] text-white flex items-center justify-center">Redirecting...</div>;
   }

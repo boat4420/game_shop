@@ -1,17 +1,26 @@
 'use client';
+// ==========================================
+// ADMIN DASHBOARD PAGE
+// ==========================================
 import { useState, useEffect, useCallback } from 'react';
 import GameForm from '@/components/GameForm';
 import Link from 'next/link';
 
 export default function AdminPage() {
+  // ------------------------------------------
+  // STATE MANAGEMENT (การจัดการสถานะ)
+  // ------------------------------------------
   const [games, setGames] = useState([]);
   const [editingGame, setEditingGame] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ------------------------------------------
+  // DATA FETCHING & AUTH CHECK (โหลดข้อมูลและเช็คสิทธิ์)
+  // ------------------------------------------
   const fetchGames = useCallback(async () => {
     try {
-      // Check auth first
+      // ตรวจสอบสิทธิ์ Admin ก่อนเข้าถึงข้อมูล
       const meRes = await fetch('/api/auth/me');
       const meData = await meRes.json();
       
@@ -39,6 +48,9 @@ export default function AdminPage() {
     fetchGames();
   }, [fetchGames]);
 
+  // ------------------------------------------
+  // ACTION HANDLERS (จัดการการ เพิ่ม/แก้ไข/ลบ)
+  // ------------------------------------------
   const handleAddGame = async (gameData) => {
     try {
       const res = await fetch('/api/games', {
@@ -77,6 +89,9 @@ export default function AdminPage() {
     }
   };
 
+  // ------------------------------------------
+  // RENDER ADMIN UI (การแสดงผลหน้าหลังบ้าน)
+  // ------------------------------------------
   return (
     <main className="min-h-screen bg-[#1A1D24] text-white p-8">
       <div className="max-w-6xl mx-auto">
